@@ -14,7 +14,7 @@ Working with SQL
 
 Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same data we used during the guided project.
 
-* [ ] ***pgAdmin data refresh***
+* [x] ***pgAdmin data refresh***
 
 * Select the northwind database created during the guided project.
 
@@ -29,7 +29,7 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ### Answer the following data queries. Keep track of the SQL you write by pasting it into this document under its appropriate header below in the provided SQL code block. You will be submitting that through the regular fork, change, pull process
 
-* [ ] ***find all customers that live in London. Returns 6 records***
+* [x] ***find all customers that live in London. Returns 6 records***
 
   <details><summary>hint</summary>
 
@@ -38,9 +38,13 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT *
+FROM customers
+WHERE UPPER(city) = 'LONDON'
+
 ```
 
-* [ ] ***find all customers with postal code 1010. Returns 3 customers***
+* [x] ***find all customers with postal code 1010. Returns 3 customers***
 
   <details><summary>hint</summary>
 
@@ -49,9 +53,13 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT *
+FROM customers
+WHERE postal_code = '1010'
+
 ```
 
-* [ ] ***find the phone number for the supplier with the id 11. Should be (010) 9984510***
+* [x] ***find the phone number for the supplier with the id 11. Should be (010) 9984510***
 
   <details><summary>hint</summary>
 
@@ -60,9 +68,13 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT phone
+FROM suppliers
+WHERE supplier_id = '11'	
+
 ```
 
-* [ ] ***list orders descending by the order date. The order with date 1998-05-06 should be at the top***
+* [x] ***list orders descending by the order date. The order with date 1998-05-06 should be at the top***
 
   <details><summary>hint</summary>
 
@@ -71,9 +83,13 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT *
+FROM orders
+ORDER BY order_date DESC 
+
 ```
 
-* [ ] ***find all suppliers who have names longer than 20 characters. Returns 11 records***
+* [x] ***find all suppliers who have names longer than 20 characters. Returns 11 records***
 
   <details><summary>hint</summary>
 
@@ -83,9 +99,13 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT *
+FROM suppliers
+WHERE length(company_name) > 20
+
 ```
 
-* [ ] ***find all customers that include the word 'MARKET' in the contact title. Should return 19 records***
+* [x] ***find all customers that include the word 'MARKET' in the contact title. Should return 19 records***
 
   <details><summary>hint</summary>
 
@@ -94,11 +114,22 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
   * Remember to convert your contact title to all upper case for case insensitive comparing so upper(contact_title)
   </details>
 
+  had issues getting 19 instead of 18
+  used this
+  SELECT *
+  FROM customers
+  WHERE upper(contact_title) LIKE 'M%'
+  
+
 ```SQL
+
+SELECT *
+FROM customers
+WHERE UPPER(contact_title) LIKE '%MARKET%'
 
 ```
 
-* [ ] ***add a customer record for***
+* [x] ***add a customer record for***
 * customer id is 'SHIRE'
 * company name is 'The Shire'
 * contact name is 'Bilbo Baggins'
@@ -113,9 +144,12 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+INSERT INTO customers(customer_id, company_name, contact_name, address, city, postal_code, country)
+	VALUES('SHIRE','The Shire','Bilbo Baggins','1 Hobbit-Hole','Bag End','111', 'Middle Earth')
+
 ```
 
-* [ ] ***update _Bilbo Baggins_ record so that the postal code changes to _"11122"_***
+* [x] ***update _Bilbo Baggins_ record so that the postal code changes to _"11122"_***
 
   <details><summary>hint</summary>
 
@@ -124,9 +158,13 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+UPDATE customers
+SET postal_code = '11122'
+WHERE contact_name = 'Bilbo Baggins'
+
 ```
 
-* [ ] ***list orders grouped and ordered by customer company name showing the number of orders per customer company name. _Rattlesnake Canyon Grocery_ should have 18 orders***
+* [x] ***list orders grouped and ordered by customer company name showing the number of orders per customer company name. _Rattlesnake Canyon Grocery_ should have 18 orders***
 
   <details><summary>hint</summary>
 
@@ -136,9 +174,15 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT c.company_name as company, count(o.order_date) as orders
+FROM orders o JOIN customers c
+on o.customer_id = c.customer_id
+GROUP BY company
+ORDER BY c.company_name ASC 
+
 ```
 
-* [ ] ***list customers by contact name and the number of orders per contact name. Sort the list by the number of orders in descending order. _Jose Pavarotti_ should be at the top with 31 orders followed by _Roland Mendal_ with 30 orders. Last should be _Francisco Chang_ with 1 order***
+* [x] ***list customers by contact name and the number of orders per contact name. Sort the list by the number of orders in descending order. _Jose Pavarotti_ should be at the top with 31 orders followed by _Roland Mendal_ with 30 orders. Last should be _Francisco Chang_ with 1 order***
 
   <details><summary>hint</summary>
 
@@ -147,9 +191,15 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
 
 ```SQL
 
+SELECT c.contact_name as contact, count(o.order_date) as orders
+FROM orders o JOIN customers c
+on o.customer_id = c.customer_id
+GROUP BY contact
+ORDER BY orders DESC 
+
 ```
 
-* [ ] ***list orders grouped by customer's city showing the number of orders per city. Returns 69 Records with _Aachen_ showing 6 orders and _Albuquerque_ showing 18 orders***
+* [x] ***list orders grouped by customer's city showing the number of orders per city. Returns 69 Records with _Aachen_ showing 6 orders and _Albuquerque_ showing 18 orders***
 
   <details><summary>hint</summary>
 
@@ -157,6 +207,12 @@ Reimport the Northwind database into PostgreSQL using pgAdmin. This is the same 
   </details>
 
 ```SQL
+
+SELECT c.city as city, count(o) as orders
+FROM orders o JOIN customers c
+on o.customer_id = c.customer_id
+GROUP BY city
+ORDER BY orders DESC 
 
 ```
 
@@ -177,55 +233,27 @@ Below are some empty tables to be used to normalize the database
 * Not all of the cells will contain data in the final solution
 * Feel free to edit these tables as necessary
 
-Table Name:
+Table Name: owners
 
-|            |            |            |            |            |            |            |            |            |
-|------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
+|owner_ID    |owner_name  |has_fence   |in_city     |pet_quantity| 
+|------------|------------|------------|------------|------------|
+|0           |Jane        |0           |0           |3           |
+|1           |Bob         |0           |1           |1           |
+|2           |Sam         |1           |1           |3           |
 
-Table Name:
 
-|            |            |            |            |            |            |            |            |            |
-|------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
+Table Name: pets
 
-Table Name:
+|pet_id      |pet_name    |species     |owner_ID    |
+|------------|------------|------------|------------|
+|0           |Ellie       |Dog         |0           |
+|1           |Joe         |Horse       |1           |
+|2           |Ginger      |Dog         |2           |
+|3           |Tiger       |Cat         |0           |
+|4           |Miss_Kitty  |Cat         |2           |
+|5           |Tony        |Turtle      |0           |
+|6           |Bubble      |Fish        |2           |
 
-|            |            |            |            |            |            |            |            |            |
-|------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-
-Table Name:
-
-|            |            |            |            |            |            |            |            |            |
-|------------|------------|------------|------------|------------|------------|------------|------------|------------|
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-|            |            |            |            |            |            |            |            |            |
-
----
 
 ### Stretch Goals
 
